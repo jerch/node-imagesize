@@ -30,11 +30,6 @@ initDecodeMap(DEC2, 6);
 initDecodeMap(DEC3, 0);
 
 
-export const enum Base64Type {
-  STANDARD = 0,
-
-}
-
 interface IPositionUpdate {
   sourcePos: number;
   targetPos: number;
@@ -76,7 +71,7 @@ export class Base64 {
     let j = 0;
     for (let i = 0; i < length; i += 3) {
       // load 3x 8 bit values
-      let accu = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
+      let accu = data[i] << 16 | data[i + 1] << 8 | data[i + 2];
 
       // write 4x 6 bit values
       target[j++] = ENC_MAP[accu >> 18];
@@ -132,7 +127,7 @@ export class Base64 {
           return {sourcePos: sourcePos - 3, targetPos};
         }
       } else {
-        // TODO: error rules
+        // TODO: error rules based on base64 type
       }
     } while (++sourcePos < endPos);
 
@@ -164,7 +159,7 @@ export class Base64 {
     let targetPos = 0;
     let accu = 0;
     let sourcePos = 0;
-    let fourStop = (endPos >> 2) << 2;
+    let fourStop = (endPos >> 2) << 2;  // FIXME: should be endPos - 4????? possible error in test?
 
     // fast loop on four bytes
     do {
@@ -393,89 +388,4 @@ export class ImageSize {
       }
     }
   }
-}
-
-
-
-// speed test
-import * as fs from 'fs';
-
-const path = '/home/jerch/Bilder/Fronalpstock_big.jpg';
-const imageData = fs.readFileSync(path);
-const b64String = imageData.toString('base64');
-const b64Buffer = new Uint8Array(Base64.encodeSize(imageData.length));
-Base64.encode(imageData, b64Buffer);
-const decodeBuffer = new Uint32Array(imageData.length);
-
-const bb = require('base64-js');
-var Base64CPP = require('@ronomon/base64');
-
-const start = new Date();
-for (let i = 0; i < 100; ++i) {
-  //Buffer.from(b64String, 'base64');
-  Base64.decode(b64Buffer, decodeBuffer);
-  //bb.toByteArray(b64String);
-  //Base64CPP.decode(b64Buffer);
-  //imageData.toString('base64');
-  //Base64.encode(imageData, b64Buffer);
-}
-console.log((new Date()) - start);
-
-
-const TEST_STRINGS = [
-  '',
-  'h',
-  'he',
-  'hel',
-  'hell',
-  'hello',
-  'hello ',
-  'hello w',
-  'hello wo',
-  'hello wor',
-  'hello worl',
-  'hello world',
-  'hello world!',
-  'aaaa',
-];
-
-function bufToString(buf: UintTypedArray): string {
-  return Array.from(buf).map(el => String.fromCharCode(el)).join('');
-}
-
-function getBase64Padding(buf: UintTypedArray): number {
-  let padding = 0;
-  if (buf[buf.length - 1] === '='.charCodeAt(0)) {
-    padding++;
-    if (buf[buf.length - 2] === '='.charCodeAt(0)) {
-      padding++;
-    }
-  }
-  return padding;
-}
-
-let buf1 = new Uint8Array(3000);
-let buf2 = new Uint8Array(3000);
-for (let i = 0; i < TEST_STRINGS.length; ++i) {
-  let data = TEST_STRINGS[i];
-  // encode
-  const encodedLength = Base64.encode(Buffer.from(data), buf1, data.length);
-  //console.log(bufToString(buf1.subarray(0, encodedLength)));
-  //console.log(Buffer.from(data).toString('base64'));
-  // decode
-  const decodedLength = Base64.decode(buf1, buf2, encodedLength);
-  //const padding = getBase64Padding(buf1.subarray(0, encodedLength));
-  //assert.equal(Base64.decodeSize(encodedLength, padding), decodedLength);
-  //assert.equal(bufToString(buf2.subarray(0, decodedLength)), data);
-  console.log(bufToString(buf2.subarray(0, decodedLength)));
-  console.log(data);
-}
-
-
-function binString(value: number): string {
-  let res = '';
-  for (let i = 31; i >= 0; --i) {
-    res += (value & (1<<i)) ? '1' : '0';
-  }
-  return res + ' ' + value;
 }

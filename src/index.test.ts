@@ -18,20 +18,25 @@ const TEST_STRINGS = [
   'hello world!'
 ];
 
-const TEST_IMAGES = [
-  'w3c_home_256.gif',
-  'w3c_home_256.jpg',
-  'w3c_home_256.png',
-  'w3c_home_2.gif',
-  'w3c_home_2.jpg',
-  'w3c_home_2.png',
-  'w3c_home_animation.gif',
-  'w3c_home.gif',
-  'w3c_home_gray.gif',
-  'w3c_home_gray.jpg',
-  'w3c_home_gray.png',
-  'w3c_home.jpg',
-  'w3c_home.png',
+const TEST_IMAGES: [string, number, number][] = [
+  ['w3c_home_256.gif', 72, 48],
+  ['w3c_home_256.jpg', 72, 48],
+  ['w3c_home_256.png', 72, 48],
+  ['w3c_home_2.gif', 72, 48],
+  ['w3c_home_2.jpg', 72, 48],
+  ['w3c_home_2.png', 72, 48],
+  ['w3c_home_animation.gif', 72, 48],
+  ['w3c_home.gif', 72, 48],
+  ['w3c_home_gray.gif', 72, 48],
+  ['w3c_home_gray.jpg', 72, 48],
+  ['w3c_home_gray.png', 72, 48],
+  ['w3c_home.jpg', 72, 48],
+  ['w3c_home.png', 72, 48],
+  ['spinfox.png', 148, 148],
+  ['iphone_hdr_YES.jpg', 3264, 2448],
+  ['nikon-e950.jpg', 800, 600],
+  ['agfa-makernotes.jpg', 8, 8],
+  ['sony-alpha-6000.jpg', 6000, 4000]
 ]
 
 const TYPE_MAP: {[index: string]: ImageType} = {
@@ -133,27 +138,25 @@ describe('base64 encode/decode', () => {
   });
 });
 
-/*
 describe('ImageSize', () => {
   it('binary', () => {
     for (let i = 0; i < TEST_IMAGES.length; ++i) {
-      const imageData = fs.readFileSync('./testimages/' + TEST_IMAGES[i]);
+      const imageData = fs.readFileSync('./testimages/' + TEST_IMAGES[i][0]);
       assert.deepEqual(
         ImageSize.guessFormat(imageData),
-        {width: 72, height: 48, type: TYPE_MAP[TEST_IMAGES[i].split('.')[1]]}
+        {width: TEST_IMAGES[i][1], height: TEST_IMAGES[i][2], type: TYPE_MAP[TEST_IMAGES[i][0].split('.')[1]]}
       );
     }
   });
   it('base64', () => {
     for (let i = 0; i < TEST_IMAGES.length; ++i) {
-      const imageData = fs.readFileSync('./testimages/' + TEST_IMAGES[i]);
+      const imageData = fs.readFileSync('./testimages/' + TEST_IMAGES[i][0]);
       const imageDataBase64 = new Uint8Array(Base64.encodeSize(imageData.length));
       Base64.encode(imageData, imageDataBase64);
       assert.deepEqual(
         ImageSize.guessFormat(imageDataBase64, true),
-        {width: 72, height: 48, type: TYPE_MAP[TEST_IMAGES[i].split('.')[1]]}
+        {width: TEST_IMAGES[i][1], height: TEST_IMAGES[i][2], type: TYPE_MAP[TEST_IMAGES[i][0].split('.')[1]]}
       );
     }
   });
-  */
 });
