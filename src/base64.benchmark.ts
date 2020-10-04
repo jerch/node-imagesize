@@ -1,5 +1,5 @@
 import { ThroughputRuntimeCase, perfContext } from 'xterm-benchmark';
-import { Base64 } from '.';
+import { Base64 } from './base64';
 import { fromByteArray, toByteArray } from 'base64-js';
 import { encode, decode } from 'js-base64';
 
