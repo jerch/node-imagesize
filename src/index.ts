@@ -159,7 +159,7 @@ export class Base64 {
     let targetPos = 0;
     let accu = 0;
     let sourcePos = 0;
-    let fourStop = (endPos >> 2) << 2;  // FIXME: should be endPos - 4????? possible error in test?
+    let fourStop = endPos - 4;
 
     // fast loop on four bytes
     do {
